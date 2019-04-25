@@ -31,12 +31,12 @@ public class LogHandler {
     private int dealNum;
 
     /**
-     * 日志命名格式 Eg:alert-image-yy-mm-dd.log.gz
+     * 日志命名格式 Eg:'pps'.yyyyMMdd.'log'
      */
     private String dateFormat;
 
     /**
-     * 匹配行数据标志 Eg:AlertImageController
+     * 匹配行数据标志 Eg:<AlertImageController>
      */
     private String lineFlag;
 
@@ -54,6 +54,28 @@ public class LogHandler {
         Map<String,Set<String>> result = new TreeMap<>();
         this.findLogFile().forEach((date, filePath) -> result.put(date,getTarget(filePath)));
         return result;
+    }
+
+    /**
+     * 获取文件夹下日志文件
+     *
+     * @return  date : logFilePath
+     */
+    private Map<String,String> findLogFile() {
+        Map<String,String> fileAll = new TreeMap<>();
+        long currentTime = System.currentTimeMillis();
+        SimpleDateFormat logDateFormat = new SimpleDateFormat(dateFormat);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+        for (int i=1;i<=dealNum;i++){
+            long logTime = currentTime - i*24*60*60*1000;
+            String fileName = logDir + logDateFormat.format(logTime);
+            if (!new File(fileName).exists()){
+                break;
+            }
+            String key = simpleDateFormat.format(logTime);
+            fileAll.put(key,fileName);
+        }
+        return fileAll;
     }
 
     /**
@@ -101,28 +123,6 @@ public class LogHandler {
             }
         }
         return resSet;
-    }
-
-    /**
-     * 获取文件夹下日志文件
-     *
-     * @return  date : logFilePath
-     */
-    private Map<String,String> findLogFile() {
-        Map<String,String> fileAll = new TreeMap<>();
-        long currentTime = System.currentTimeMillis();
-        SimpleDateFormat logDateFormat = new SimpleDateFormat(dateFormat);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
-        for (int i=1;i<=dealNum;i++){
-            long logTime = currentTime - i*24*60*60*1000;
-            String fileName = logDir + logDateFormat.format(logTime);
-            if (!new File(fileName).exists()){
-                break;
-            }
-            String key = simpleDateFormat.format(logTime);
-            fileAll.put(key,fileName);
-        }
-        return fileAll;
     }
 
     /**

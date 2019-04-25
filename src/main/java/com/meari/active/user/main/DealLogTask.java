@@ -31,7 +31,7 @@ public class DealLogTask implements CommandLineRunner {
 
     /**
      * task
-     * @param args 不传时默认只处理昨天的日志，传一个参数代表处理前args[0]天的日志
+     * @param args 不传参时默认只处理昨天的日志，传一个参数代表处理前args[0]天的日志
      * @throws Exception e
      */
     @Override
@@ -67,7 +67,7 @@ public class DealLogTask implements CommandLineRunner {
                     long userId = Long.parseLong(userIdStr) - 10000000;
                     //1.只统计userId大于10000000的数据
                     //2.用户暂时限制到十万以防出现异常数据bit过大导致占用过多内存
-                    //3.使用bitmap存储是为了方便的统计月活跃用户，以及应对用户增长带来的统计数据存储空间占用
+                    //3.使用bitmap存储是为了方便统计月活跃用户，以及应对用户增长带来的统计数据存储空间占用
                     if (userId >= 0 && userId < 100000) {
                         if (!redisClient.setBit("AU" + date, userId)){
                             insertNum++;
